@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cachorritos 🐾</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://ysbcnibzmyqtqrqjbnpl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYmNuaWJ6bXlxdHFycWpibnBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNzM4NzEsImV4cCI6MjA4OTg0OTg3MX0.pptTJ97CRtnTH51xnUhfTLjUzKFPPYHtlvfMHL5H7x8';
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+<style>
+  :root {
+    --cream: #FFF8F0;
+    --warm: #FFF0DC;
+    --orange: #FF6B35;
+    --orange-light: #FF8C5A;
+    --teal: #2EC4B6;
+    --teal-light: #4DD9CE;
+    --purple: #9B5DE5;
+    --yellow: #FFD166;
+    --dark: #1A1A2E;
+    --gray: #6B7280;
+    --light-gray: #F3F4F6;
+    --white: #FFFFFF;
+    --shadow: 0 4px 20px rgba(255,107,53,0.15);
+    --shadow-soft: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    background: var(--white);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+
+  .logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--orange);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .logo .paws-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 46px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--gray);
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--warm);
+    color: var(--orange);
+  }
+
+  .nav-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    border: 2px solid var(--white);
+    box-shadow: 0 0 0 2px var(--orange);
+  }
+
+  /* ===== LAYOUT ===== */
+  .layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 16px;
+    display: grid;
+    grid-template-columns: 260px 1fr 280px;
+    gap: 24px;
+  }
+
+  /* ===== SIDEBAR LEFT ===== */
+  .sidebar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .profile-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .profile-avatar-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD166, #FF6B35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin: 0 auto;
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 3px var(--orange);
+  }
+
+  .online-badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 14px;
+    height: 14px;
+    background: #22C55E;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+  }
+
+  .profile-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 20px;
+    color: var(--dark);
+  }
+
+  .profile-sub {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 2px;
+  }
+
+  .profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--light-gray);
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--orange);
+  }
+  .stat-label { font-size: 12px; color: var(--gray); }
+
+  .menu-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--gray);
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .menu-item:hover, .menu-item.active {
+    background: var(--warm);
+    color: var(--orange);
+  }
+
+  .menu-icon { font-size: 20px; }
+
+  .badge {
+    margin-left: auto;
+    background: var(--orange);
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 50px;
+  }
+
+  /* ===== MAIN FEED ===== */
+  .main-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ===== PAGE SECTIONS ===== */
+  .page-section { display: none; flex-direction: column; gap: 20px; }
+  .page-section.active { display: flex; }
+
+  /* ===== CREATE POST ===== */
+  .create-post {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .create-post-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mini-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD166, #FF6B35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .post-input {
+    flex: 1;
+    border: 2px solid var(--light-gray);
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--dark);
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--cream);
+  }
+
+  .post-input:focus { border-color: var(--orange); }
+
+  .create-post-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--light-gray);
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 50px;
+    border: none;
+    background: var(--light-gray);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .action-btn:hover { background: var(--warm); color: var(--orange); }
+
+  .post-submit {
+    margin-left: auto;
+    background: var(--orange);
+    color: white;
+    padding: 8px 22px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .post-submit:hover { background: var(--orange-light); transform: translateY(-1px); }
+
+  /* ===== STORIES ===== */
+  .stories {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .stories::-webkit-scrollbar { display: none; }
+
+  .story {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .story-ring {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, var(--orange), var(--purple), var(--teal));
+  }
+
+  .story-ring.add-story {
+    background: var(--light-gray);
+  }
+
+  .story-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 2px solid var(--white);
+    overflow: hidden;
+  }
+
+  .story-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray);
+    text-align: center;
+    max-width: 62px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ===== POST CARD ===== */
+  .post-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .post-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .post-meta { flex: 1; }
+  .post-author { font-weight: 800; font-size: 15px; }
+  .post-time { font-size: 12px; color: var(--gray); }
+
+  .post-more {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--gray);
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  .post-more:hover { background: var(--light-gray); }
+
+  .post-text {
+    padding: 0 20px 14px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--dark);
+  }
+
+  .post-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    background: linear-gradient(135deg, var(--warm), #FFE4C4);
+  }
+
+  .post-image.teal-bg { background: linear-gradient(135deg, #E0FFFE, #B2F5F0); }
+  .post-image.purple-bg { background: linear-gradient(135deg, #F3E8FF, #DDD6FE); }
+  .post-image.yellow-bg { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); }
+
+  .post-tags {
+    display: flex;
+    gap: 6px;
+    padding: 0 20px 12px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: var(--warm);
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 50px;
+  }
+
+  .post-actions {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-top: 1px solid var(--light-gray);
+    gap: 4px;
+  }
+
+  .react-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    border-radius: 50px;
+    border: none;
+    background: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .react-btn:hover { background: var(--warm); color: var(--orange); transform: scale(1.05); }
+  .react-btn.liked { color: #EF4444; }
+  .react-btn.liked:hover { background: #FEF2F2; color: #EF4444; }
+
+  .share-btn { margin-left: auto; }
+
+  /* ===== SIDEBAR RIGHT ===== */
+  .sidebar-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .widget-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .widget-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 17px;
+    color: var(--dark);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .suggest-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .suggest-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .suggest-info { flex: 1; }
+  .suggest-name { font-weight: 800; font-size: 13px; }
+  .suggest-breed { font-size: 11px; color: var(--gray); }
+
+  .follow-btn {
+    background: var(--orange);
+    color: white;
+    border: none;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .follow-btn:hover { background: var(--orange-light); }
+  .follow-btn.following {
+    background: var(--light-gray);
+    color: var(--gray);
+  }
+
+  .trending-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--light-gray);
+    cursor: pointer;
+  }
+
+  .trending-tag:last-child { border-bottom: none; }
+  .trending-tag:hover .tag-name { color: var(--orange); }
+
+  .tag-name { font-weight: 700; font-size: 13px; color: var(--dark); }
+  .tag-count { font-size: 12px; color: var(--gray); }
+
+  /* ===== ADOPTION PAGE ===== */
+  .adoption-header {
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    border-radius: 20px;
+    padding: 28px;
+    color: white;
+    text-align: center;
+  }
+
+  .adoption-header h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  .adoption-header p { font-size: 14px; opacity: 0.9; }
+
+  .adoption-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-chip {
+    padding: 7px 16px;
+    border-radius: 50px;
+    border: 2px solid var(--light-gray);
+    background: var(--white);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--gray);
+  }
+
+  .filter-chip:hover, .filter-chip.active {
+    border-color: var(--teal);
+    background: #E0FFFE;
+    color: var(--teal);
+  }
+
+  .adoption-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .adopt-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .adopt-card:hover { transform: translateY(-4px); }
+
+  .adopt-image {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    position: relative;
+  }
+
+  .adopt-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--teal);
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 50px;
+  }
+
+  .adopt-urgent { background: var(--orange); }
+
+  .adopt-info { padding: 14px; }
+  .adopt-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 18px;
+    color: var(--dark);
+  }
+  .adopt-details { font-size: 12px; color: var(--gray); margin-top: 3px; margin-bottom: 10px; }
+
+  .adopt-btn {
+    width: 100%;
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 9px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .adopt-btn:hover { background: var(--teal-light); }
+
+  /* ===== COMMUNITY PAGE ===== */
+  .community-header {
+    background: linear-gradient(135deg, var(--purple), #C084FC);
+    border-radius: 20px;
+    padding: 28px;
+    color: white;
+    text-align: center;
+  }
+
+  .community-header h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .group-card {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .group-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+  .group-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .g-orange { background: #FFF0DC; }
+  .g-teal { background: #E0FFFE; }
+  .g-purple { background: #F3E8FF; }
+  .g-yellow { background: #FFFBEB; }
+  .g-pink { background: #FEF2F7; }
+  .g-green { background: #F0FDF4; }
+
+  .group-name { font-weight: 800; font-size: 14px; margin-bottom: 3px; }
+  .group-members { font-size: 12px; color: var(--gray); margin-bottom: 10px; }
+
+  .join-btn {
+    background: var(--purple);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .join-btn:hover { background: #A855F7; }
+  .join-btn.joined { background: var(--light-gray); color: var(--gray); }
+
+  /* ===== PROFILES PAGE ===== */
+  .profile-header-banner {
+    background: linear-gradient(135deg, var(--orange), var(--yellow));
+    border-radius: 20px;
+    padding: 28px;
+    color: white;
+    text-align: center;
+  }
+
+  .profile-header-banner h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 26px;
+    margin-bottom: 6px;
+  }
+
+  .profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .pet-profile-card {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow-soft);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .pet-profile-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+  .pet-profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    margin: 0 auto 10px;
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 3px var(--orange);
+  }
+
+  .pet-profile-name { font-weight: 800; font-size: 14px; margin-bottom: 2px; }
+  .pet-profile-breed { font-size: 11px; color: var(--gray); margin-bottom: 8px; }
+  .pet-profile-stats { font-size: 12px; color: var(--orange); font-weight: 700; }
+
+  /* ===== NOTIFICATION DOT ===== */
+  .notif-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 4px;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.3); }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar-left, .sidebar-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">
+    <div class="paws-row">
+      <!-- Huella perro (naranja) — más arriba -->
+      <svg width="38" height="42" viewBox="0 0 38 42" style="margin-bottom:10px;">
+        <ellipse cx="19" cy="28" rx="12" ry="9" fill="#FF6B35"/>
+        <ellipse cx="5"  cy="16" rx="5"  ry="6"  fill="#FF6B35"/>
+        <ellipse cx="13" cy="11" rx="5"  ry="6"  fill="#FF6B35"/>
+        <ellipse cx="25" cy="11" rx="5"  ry="6"  fill="#FF6B35"/>
+        <ellipse cx="33" cy="16" rx="5"  ry="6"  fill="#FF6B35"/>
+      </svg>
+      <!-- Huella gato (teal) — más abajo -->
+      <svg width="34" height="38" viewBox="0 0 34 38">
+        <ellipse cx="17" cy="26" rx="10" ry="8"  fill="#2EC4B6"/>
+        <ellipse cx="4"  cy="14" rx="4"  ry="5"  fill="#2EC4B6"/>
+        <ellipse cx="11" cy="10" rx="4"  ry="5"  fill="#2EC4B6"/>
+        <ellipse cx="21" cy="10" rx="4"  ry="5"  fill="#2EC4B6"/>
+        <ellipse cx="29" cy="14" rx="4"  ry="5"  fill="#2EC4B6"/>
+      </svg>
+    </div>
+    Cachorritos
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('feed', this)">🏠 Inicio</button>
+    <button class="nav-btn" onclick="showPage('perfiles', this)">🐶 Perfiles</button>
+    <button class="nav-btn" onclick="showPage('adopciones', this)">❤️ Adopciones</button>
+    <button class="nav-btn" onclick="showPage('comunidad', this)">👥 Comunidad</button>
+  </div>
+  <div class="nav-avatar">🐱</div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR LEFT -->
+  <aside class="sidebar-left">
+    <div class="profile-card">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar">🐱</div>
+        <div class="online-badge"></div>
+      </div>
+      <div class="profile-name">Michi López</div>
+      <div class="profile-sub">Gato Persa · 3 años</div>
+      <div class="profile-stats">
+        <div class="stat"><div class="stat-num">48</div><div class="stat-label">posts</div></div>
+        <div class="stat"><div class="stat-num">312</div><div class="stat-label">amigos</div></div>
+        <div class="stat"><div class="stat-num">205</div><div class="stat-label">fotos</div></div>
+      </div>
+    </div>
+
+    <div class="menu-card">
+      <button class="menu-item active" onclick="showPage('feed', null)"><span class="menu-icon">🏠</span> Inicio</button>
+      <button class="menu-item" onclick="showPage('perfiles', null)"><span class="menu-icon">🐾</span> Mis Mascotas</button>
+      <button class="menu-item" onclick="showPage('adopciones', null)"><span class="menu-icon">❤️</span> Adopciones <span class="badge">5</span></button>
+      <button class="menu-item" onclick="showPage('comunidad', null)"><span class="menu-icon">👥</span> Comunidad</button>
+      <button class="menu-item"><span class="menu-icon">💬</span> Mensajes <span class="badge">3</span></button>
+      <button class="menu-item"><span class="menu-icon">🔔</span> Notificaciones</button>
+      <button class="menu-item"><span class="menu-icon">⚙️</span> Configuración</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-feed">
+
+    <!-- FEED PAGE -->
+    <div id="page-feed" class="page-section active">
+
+      <!-- Stories -->
+      <div class="stories">
+        <div class="story">
+          <div class="story-ring add-story">
+            <div class="story-inner" style="background:var(--warm); font-size:32px;">➕</div>
+          </div>
+          <div class="story-name">Tu historia</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐶</div>
+          </div>
+          <div class="story-name">Rufus</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐰</div>
+          </div>
+          <div class="story-name">Bunny</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐹</div>
+          </div>
+          <div class="story-name">Poquito</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🦜</div>
+          </div>
+          <div class="story-name">Loro Verde</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐠</div>
+          </div>
+          <div class="story-name">Nemo</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐢</div>
+          </div>
+          <div class="story-name">Turbo</div>
+        </div>
+      </div>
+
+      <!-- Create Post -->
+      <div class="create-post">
+        <div class="create-post-top">
+          <div class="mini-avatar">🐱</div>
+          <input class="post-input" type="text" placeholder="¿Qué está haciendo Michi hoy? 🐾">
+        </div>
+        <div class="create-post-actions">
+          <button class="action-btn">📷 Foto</button>
+          <button class="action-btn">🎥 Video</button>
+          <button class="action-btn">😊 Emoción</button>
+          <button class="post-submit" onclick="addPost()">Publicar</button>
+        </div>
+      </div>
+
+      <!-- Posts -->
+      <div id="posts-container">
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar" style="background:linear-gradient(135deg,#FFD166,#FF6B35)">🐶</div>
+            <div class="post-meta">
+              <div class="post-author">Rufus García 🐾</div>
+              <div class="post-time">Hace 2 horas · Golden Retriever · 2 años</div>
+            </div>
+            <button class="post-more">•••</button>
+          </div>
+          <div class="post-text">¡Hoy fui al parque por primera vez después de mi operación! 🎉 Corrí, salté y até a todas las ardillas del parque. Mis papás estaban más emocionados que yo 🥹</div>
+          <div class="post-image yellow-bg">🐕</div>
+          <div class="post-tags">
+            <span class="tag">#Recuperación</span>
+            <span class="tag">#Parque</span>
+            <span class="tag">#GoldenRetriever</span>
+          </div>
+          <div class="post-actions">
+            <button class="react-btn" onclick="toggleLike(this)">🐾 <span>124</span></button>
+            <button class="react-btn">💬 <span>38 comentarios</span></button>
+            <button class="react-btn share-btn">↗️ Compartir</button>
+          </div>
+        </div>
+
+        <div class="post-card" style="animation-delay:0.1s">
+          <div class="post-header">
+            <div class="post-avatar" style="background:linear-gradient(135deg,#E0FFFE,#2EC4B6)">🐱</div>
+            <div class="post-meta">
+              <div class="post-author">Luna Martínez 🌙</div>
+              <div class="post-time">Hace 5 horas · Gato Siamés · 4 años</div>
+            </div>
+            <button class="post-more">•••</button>
+          </div>
+          <div class="post-text">Encontré el rayo de sol perfecto a las 3pm. No me muevan. No me hablen. Estoy en mi momento zen ☀️😌</div>
+          <div class="post-image teal-bg">🐈</div>
+          <div class="post-tags">
+            <span class="tag">#GatosDormilones</span>
+            <span class="tag">#RayoDeSol</span>
+            <span class="tag">#Siesta</span>
+          </div>
+          <div class="post-actions">
+            <button class="react-btn liked" onclick="toggleLike(this)">🐾 <span>89</span></button>
+            <button class="react-btn">💬 <span>21 comentarios</span></button>
+            <button class="react-btn share-btn">↗️ Compartir</button>
+          </div>
+        </div>
+
+        <div class="post-card" style="animation-delay:0.2s">
+          <div class="post-header">
+            <div class="post-avatar" style="background:linear-gradient(135deg,#F3E8FF,#9B5DE5)">🐰</div>
+            <div class="post-meta">
+              <div class="post-author">Bunny Rodríguez 🌸</div>
+              <div class="post-time">Hace 8 horas · Conejo Holland Lop · 1 año</div>
+            </div>
+            <button class="post-more">•••</button>
+          </div>
+          <div class="post-text">Me dejaron explorar la sala entera hoy. Encontré 3 calcetines perdidos, una moneda y el control remoto que llevaba 2 meses desaparecido 🕵️‍♀️ De nada, familia.</div>
+          <div class="post-image purple-bg">🐇</div>
+          <div class="post-tags">
+            <span class="tag">#ConejosExploradores</span>
+            <span class="tag">#DetectivePeludita</span>
+          </div>
+          <div class="post-actions">
+            <button class="react-btn" onclick="toggleLike(this)">🐾 <span>203</span></button>
+            <button class="react-btn">💬 <span>67 comentarios</span></button>
+            <button class="react-btn share-btn">↗️ Compartir</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PERFILES PAGE -->
+    <div id="page-perfiles" class="page-section">
+      <div class="profile-header-banner">
+        <h2>🐾 Perfiles de Mascotas</h2>
+        <p>Conoce a los cachorritos de nuestra comunidad</p>
+      </div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="filter-chip active" onclick="setFilter(this)">Todos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐶 Perros</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐱 Gatos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐰 Conejos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐹 Roedores</button>
+        <button class="filter-chip" onclick="setFilter(this)">🦜 Aves</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐠 Peces</button>
+      </div>
+
+      <div class="profiles-grid">
+        <div class="pet-profile-card">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#FFD166,#FF6B35)">🐶</div>
+          <div class="pet-profile-name">Rufus García</div>
+          <div class="pet-profile-breed">Golden Retriever · 2 años</div>
+          <div class="pet-profile-stats">312 amigos · 48 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.05s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#E0FFFE,#2EC4B6)">🐱</div>
+          <div class="pet-profile-name">Luna Martínez</div>
+          <div class="pet-profile-breed">Gato Siamés · 4 años</div>
+          <div class="pet-profile-stats">205 amigos · 33 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.1s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#F3E8FF,#9B5DE5)">🐰</div>
+          <div class="pet-profile-name">Bunny Rodríguez</div>
+          <div class="pet-profile-breed">Holland Lop · 1 año</div>
+          <div class="pet-profile-stats">178 amigos · 22 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.15s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#FEF2F7,#EC4899)">🐹</div>
+          <div class="pet-profile-name">Poquito Sánchez</div>
+          <div class="pet-profile-breed">Hámster Sirio · 8 meses</div>
+          <div class="pet-profile-stats">89 amigos · 15 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.2s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#F0FDF4,#22C55E)">🦜</div>
+          <div class="pet-profile-name">Verde López</div>
+          <div class="pet-profile-breed">Loro Amazónico · 6 años</div>
+          <div class="pet-profile-stats">421 amigos · 71 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.25s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#EFF6FF,#3B82F6)">🐠</div>
+          <div class="pet-profile-name">Nemo Jiménez</div>
+          <div class="pet-profile-breed">Pez Payaso · 2 años</div>
+          <div class="pet-profile-stats">54 amigos · 9 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.3s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#FFFBEB,#F59E0B)">🐢</div>
+          <div class="pet-profile-name">Turbo Pérez</div>
+          <div class="pet-profile-breed">Tortuga Rusa · 12 años</div>
+          <div class="pet-profile-stats">134 amigos · 18 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.35s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#FEF2F7,#F43F5E)">🐕</div>
+          <div class="pet-profile-name">Coco Flores</div>
+          <div class="pet-profile-breed">Chihuahua · 5 años</div>
+          <div class="pet-profile-stats">267 amigos · 41 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.4s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#F0FDF4,#16A34A)">🐍</div>
+          <div class="pet-profile-name">Slinky Torres</div>
+          <div class="pet-profile-breed">Serpiente Ball Python · 3 años</div>
+          <div class="pet-profile-stats">98 amigos · 12 posts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADOPCIONES PAGE -->
+    <div id="page-adopciones" class="page-section">
+      <div class="adoption-header">
+        <h2>❤️ Adopta un Peludito</h2>
+        <p>Dale un hogar a quien más lo necesita</p>
+      </div>
+
+      <div class="adoption-filters">
+        <button class="filter-chip active" onclick="setFilter(this)">Todos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐶 Perros</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐱 Gatos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐰 Pequeños</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐣 Cachorros</button>
+        <button class="filter-chip" onclick="setFilter(this)">👴 Adultos</button>
+      </div>
+
+      <div class="adoption-grid">
+        <div class="adopt-card">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#FFF0DC,#FFD166)">
+            🐕 <div class="adopt-badge adopt-urgent">⚡ Urgente</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Max</div>
+            <div class="adopt-details">🐶 Labrador · 1 año · Macho<br>📍 Ciudad de México</div>
+            <button class="adopt-btn">❤️ Quiero adoptarlo</button>
+          </div>
+        </div>
+        <div class="adopt-card" style="animation-delay:0.05s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#E0FFFE,#B2F5F0)">
+            🐈 <div class="adopt-badge">Disponible</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Mia</div>
+            <div class="adopt-details">🐱 Mestiza · 2 años · Hembra<br>📍 Guadalajara</div>
+            <button class="adopt-btn">❤️ Quiero adoptarla</button>
+          </div>
+        </div>
+        <div class="adopt-card" style="animation-delay:0.1s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#F3E8FF,#DDD6FE)">
+            🐇 <div class="adopt-badge">Disponible</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Snowball</div>
+            <div class="adopt-details">🐰 Conejo Blanco · 8 meses · Hembra<br>📍 Monterrey</div>
+            <button class="adopt-btn">❤️ Quiero adoptarla</button>
+          </div>
+        </div>
+        <div class="adopt-card" style="animation-delay:0.15s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#FEF2F7,#FBCFE8)">
+            🐶 <div class="adopt-badge adopt-urgent">⚡ Urgente</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Rocky</div>
+            <div class="adopt-details">🐶 Pitbull · 3 años · Macho<br>📍 Puebla</div>
+            <button class="adopt-btn">❤️ Quiero adoptarlo</button>
+          </div>
+        </div>
+        <div class="adopt-card" style="animation-delay:0.2s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#F0FDF4,#BBF7D0)">
+            🐢 <div class="adopt-badge">Disponible</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Turbo Jr.</div>
+            <div class="adopt-details">🐢 Tortuga · 4 años · Macho<br>📍 CDMX</div>
+            <button class="adopt-btn">❤️ Quiero adoptarlo</button>
+          </div>
+        </div>
+        <div class="adopt-card" style="animation-delay:0.25s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#FFFBEB,#FDE68A)">
+            🐱 <div class="adopt-badge">Disponible</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Naranja</div>
+            <div class="adopt-details">🐱 Gato Naranja · 1 año · Macho<br>📍 León</div>
+            <button class="adopt-btn">❤️ Quiero adoptarlo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMUNIDAD PAGE -->
+    <div id="page-comunidad" class="page-section">
+      <div class="community-header">
+        <h2>👥 Comunidad Cachorritos</h2>
+        <p>Únete a grupos y conecta con dueños como tú</p>
+      </div>
+
+      <div style="background:var(--white); border-radius:16px; padding:16px; box-shadow:var(--shadow-soft);">
+        <input class="post-input" style="width:100%; border-radius:12px;" type="text" placeholder="🔍 Buscar grupos por tema o especie...">
+      </div>
+
+      <div class="groups-grid">
+        <div class="group-card">
+          <div class="group-icon g-orange">🐶</div>
+          <div class="group-name">Amantes de los Perros</div>
+          <div class="group-members">👤 12,400 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.05s">
+          <div class="group-icon g-teal">🐱</div>
+          <div class="group-name">Gateros Unidos</div>
+          <div class="group-members">👤 9,870 miembros</div>
+          <button class="join-btn joined">✓ Unido</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.1s">
+          <div class="group-icon g-purple">🐰</div>
+          <div class="group-name">Club de Conejos</div>
+          <div class="group-members">👤 3,210 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.15s">
+          <div class="group-icon g-yellow">🦜</div>
+          <div class="group-name">Aves Exóticas</div>
+          <div class="group-members">👤 5,680 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.2s">
+          <div class="group-icon g-pink">🏥</div>
+          <div class="group-name">Salud y Veterinaria</div>
+          <div class="group-members">👤 18,900 miembros</div>
+          <button class="join-btn joined">✓ Unido</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.25s">
+          <div class="group-icon g-green">🌿</div>
+          <div class="group-name">Alimentación Natural</div>
+          <div class="group-members">👤 7,450 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.3s">
+          <div class="group-icon g-orange">🐾</div>
+          <div class="group-name">Rescatistas Héroes</div>
+          <div class="group-members">👤 22,300 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.35s">
+          <div class="group-icon g-teal">🎓</div>
+          <div class="group-name">Entrenamiento Positivo</div>
+          <div class="group-members">👤 4,120 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR RIGHT -->
+  <aside class="sidebar-right">
+    <div class="widget-card">
+      <div class="widget-title">🐾 Sugerencias para seguir</div>
+      <div class="suggest-item">
+        <div class="suggest-avatar" style="background:linear-gradient(135deg,#FFFBEB,#F59E0B)">🐢</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Turbo Pérez</div>
+          <div class="suggest-breed">Tortuga Rusa</div>
+        </div>
+        <button class="follow-btn" onclick="toggleFollow(this)">Seguir</button>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-avatar" style="background:linear-gradient(135deg,#F0FDF4,#22C55E)">🦜</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Verde López</div>
+          <div class="suggest-breed">Loro Amazónico</div>
+        </div>
+        <button class="follow-btn" onclick="toggleFollow(this)">Seguir</button>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-avatar" style="background:linear-gradient(135deg,#EFF6FF,#3B82F6)">🐠</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Nemo Jiménez</div>
+          <div class="suggest-breed">Pez Payaso</div>
+        </div>
+        <button class="follow-btn" onclick="toggleFollow(this)">Seguir</button>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-avatar" style="background:linear-gradient(135deg,#FEF2F7,#EC4899)">🐹</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Poquito Sánchez</div>
+          <div class="suggest-breed">Hámster Sirio</div>
+        </div>
+        <button class="follow-btn" onclick="toggleFollow(this)">Seguir</button>
+      </div>
+    </div>
+
+    <div class="widget-card">
+      <div class="widget-title">🔥 Trending</div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#GatosDormilones</div>
+          <div class="tag-count">2,340 publicaciones</div>
+        </div>
+        <span>🐱</span>
+      </div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#AdoptaNoCompres</div>
+          <div class="tag-count">1,890 publicaciones</div>
+        </div>
+        <span>❤️</span>
+      </div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#PerrosFelices</div>
+          <div class="tag-count">3,120 publicaciones</div>
+        </div>
+        <span>🐶</span>
+      </div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#MascotasExóticas</div>
+          <div class="tag-count">876 publicaciones</div>
+        </div>
+        <span>🦜</span>
+      </div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#VidaPeludita</div>
+          <div class="tag-count">5,670 publicaciones</div>
+        </div>
+        <span>🌟</span>
+      </div>
+    </div>
+
+    <div class="widget-card" style="background:linear-gradient(135deg,var(--orange),var(--orange-light)); color:white;">
+      <div style="font-family:'Fredoka One',cursive; font-size:18px; margin-bottom:8px;">🌟 Cachorritos Premium</div>
+      <div style="font-size:13px; opacity:0.9; margin-bottom:14px;">Sin anuncios, perfiles verificados y estadísticas avanzadas.</div>
+      <button style="background:white; color:var(--orange); border:none; padding:8px 20px; border-radius:50px; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; cursor:pointer; width:100%;">Ver planes ✨</button>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  function showPage(page, btn) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  function toggleLike(btn) {
+    const span = btn.querySelector('span');
+    const num = parseInt(span.textContent);
+    if (btn.classList.contains('liked')) {
+      btn.classList.remove('liked');
+      span.textContent = num - 1;
+    } else {
+      btn.classList.add('liked');
+      span.textContent = num + 1;
+    }
+  }
+
+  function toggleFollow(btn) {
+    if (btn.classList.contains('following')) {
+      btn.classList.remove('following');
+      btn.textContent = 'Seguir';
+    } else {
+      btn.classList.add('following');
+      btn.textContent = '✓ Siguiendo';
+    }
+  }
+
+  function setFilter(btn) {
+    btn.closest('div').querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function addPost() {
+    const input = document.querySelector('.post-input');
+    const text = input.value.trim();
+    if (!text) return;
+    const container = document.getElementById('posts-container');
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.innerHTML = `
+      <div class="post-header">
+        <div class="post-avatar" style="background:linear-gradient(135deg,#FFD166,#FF6B35)">🐱</div>
+        <div class="post-meta">
+          <div class="post-author">Michi López 🐾</div>
+          <div class="post-time">Ahora mismo · Gato Persa · 3 años</div>
+        </div>
+        <button class="post-more">•••</button>
+      </div>
+      <div class="post-text">${text}</div>
+      <div class="post-actions">
+        <button class="react-btn" onclick="toggleLike(this)">🐾 <span>0</span></button>
+        <button class="react-btn">💬 <span>0 comentarios</span></button>
+        <button class="react-btn share-btn">↗️ Compartir</button>
+      </div>
+    `;
+    container.insertBefore(card, container.firstChild);
+    input.value = '';
+  }
+</script>
+</body>
+</html>
