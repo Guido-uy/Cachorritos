@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cachorritos 🐾 — Registro</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Cachorritos 🐾</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://ysbcnibzmyqtqrqjbnpl.supabase.co';
@@ -18,14 +18,15 @@
     --orange: #FF6B35;
     --orange-light: #FF8C5A;
     --teal: #2EC4B6;
+    --teal-light: #4DD9CE;
     --purple: #9B5DE5;
     --yellow: #FFD166;
     --dark: #1A1A2E;
     --gray: #6B7280;
     --light-gray: #F3F4F6;
     --white: #FFFFFF;
-    --error: #EF4444;
-    --success: #22C55E;
+    --shadow: 0 4px 20px rgba(255,107,53,0.15);
+    --shadow-soft: 0 2px 12px rgba(0,0,0,0.08);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,898 +34,1384 @@
   body {
     font-family: 'Nunito', sans-serif;
     background: var(--cream);
+    color: var(--dark);
     min-height: 100vh;
+  }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    background: var(--white);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+
+  .logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--orange);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .logo .paws-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 46px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--gray);
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--warm);
+    color: var(--orange);
+  }
+
+  .nav-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--purple));
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border: 2px solid var(--white);
+    box-shadow: 0 0 0 2px var(--orange);
   }
 
-  /* Background blobs */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -100px; left: -100px;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(255,107,53,0.12), transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    bottom: -80px; right: -80px;
-    width: 350px; height: 350px;
-    background: radial-gradient(circle, rgba(46,196,182,0.12), transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
+  /* ===== LAYOUT ===== */
+  .layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 16px;
+    display: grid;
+    grid-template-columns: 260px 1fr 280px;
+    gap: 24px;
   }
 
-  .auth-wrapper {
-    width: 100%;
-    max-width: 440px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ===== CARD ===== */
-  .card {
-    background: var(--white);
-    border-radius: 28px;
-    padding: 40px 36px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.10);
-    animation: slideUp 0.5s cubic-bezier(.16,1,.3,1) both;
-  }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ===== LOGO ===== */
-  .logo {
-    text-align: center;
-    margin-bottom: 28px;
-  }
-
-  .logo-icon {
+  /* ===== SIDEBAR LEFT ===== */
+  .sidebar-left {
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .profile-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .profile-avatar-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD166, #FF6B35);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 10px;
-    height: 56px;
-    margin-bottom: 4px;
-    animation: bounce 2s infinite;
+    font-size: 40px;
+    margin: 0 auto;
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 3px var(--orange);
   }
 
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+  .online-badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 14px;
+    height: 14px;
+    background: #22C55E;
+    border-radius: 50%;
+    border: 2px solid var(--white);
   }
 
-  .logo-text {
+  .profile-name {
     font-family: 'Fredoka One', cursive;
-    font-size: 36px;
-    color: var(--orange);
-    letter-spacing: 0.5px;
+    font-size: 20px;
+    color: var(--dark);
   }
 
-  .logo-sub {
+  .profile-sub {
     font-size: 13px;
     color: var(--gray);
     margin-top: 2px;
   }
 
-  /* ===== STEP INDICATOR ===== */
-  .steps {
+  .profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--light-gray);
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--orange);
+  }
+  .stat-label { font-size: 12px; color: var(--gray); }
+
+  .menu-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .menu-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 28px;
-  }
-
-  .step-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--light-gray);
-    transition: all 0.3s;
-  }
-
-  .step-dot.active {
-    background: var(--orange);
-    width: 28px;
-    border-radius: 5px;
-  }
-
-  .step-dot.done { background: var(--teal); }
-
-  /* ===== STEP CONTENT ===== */
-  .step { display: none; }
-  .step.active {
-    display: block;
-    animation: fadeIn 0.35s ease both;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(16px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .step-title {
-    font-family: 'Fredoka One', cursive;
-    font-size: 24px;
-    color: var(--dark);
-    margin-bottom: 6px;
-  }
-
-  .step-desc {
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
     font-size: 14px;
     color: var(--gray);
-    margin-bottom: 24px;
-    line-height: 1.5;
-  }
-
-  /* ===== INPUTS ===== */
-  .field {
-    margin-bottom: 16px;
-  }
-
-  .field label {
-    display: block;
-    font-weight: 800;
-    font-size: 13px;
-    color: var(--dark);
-    margin-bottom: 7px;
-  }
-
-  .input-wrap {
-    position: relative;
-  }
-
-  .input-prefix {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-weight: 800;
-    font-size: 15px;
-    color: var(--gray);
-  }
-
-  input[type="tel"],
-  input[type="text"],
-  input[type="date"],
-  select,
-  textarea {
-    width: 100%;
-    border: 2px solid var(--light-gray);
-    border-radius: 14px;
-    padding: 13px 16px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px;
-    color: var(--dark);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    background: var(--cream);
-    appearance: none;
-  }
-
-  input[type="tel"] { padding-left: 52px; letter-spacing: 1px; }
-
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--orange);
-    box-shadow: 0 0 0 3px rgba(255,107,53,0.12);
-    background: var(--white);
-  }
-
-  textarea { resize: none; min-height: 80px; }
-
-  .input-hint {
-    font-size: 12px;
-    color: var(--gray);
-    margin-top: 5px;
-  }
-
-  /* ===== OTP INPUTS ===== */
-  .otp-wrap {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin: 20px 0;
-  }
-
-  .otp-input {
-    width: 52px !important;
-    height: 56px;
-    text-align: center;
-    font-size: 22px !important;
-    font-weight: 900 !important;
-    padding: 0 !important;
-    border-radius: 14px !important;
-    letter-spacing: 0 !important;
-  }
-
-  .otp-input:focus { border-color: var(--orange); }
-
-  /* ===== SPECIES SELECTOR ===== */
-  .species-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .species-btn {
-    border: 2px solid var(--light-gray);
-    background: var(--cream);
-    border-radius: 14px;
-    padding: 12px 8px;
-    text-align: center;
-    cursor: pointer;
     transition: all 0.2s;
-    font-family: 'Nunito', sans-serif;
-  }
-
-  .species-btn:hover { border-color: var(--orange); background: var(--warm); }
-
-  .species-btn.selected {
-    border-color: var(--orange);
-    background: var(--warm);
-    box-shadow: 0 0 0 2px rgba(255,107,53,0.2);
-  }
-
-  .species-emoji { font-size: 30px; display: block; margin-bottom: 4px; }
-  .species-label { font-size: 12px; font-weight: 700; color: var(--dark); }
-
-  /* ===== AVATAR PICKER ===== */
-  .avatar-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .avatar-opt {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    cursor: pointer;
-    border: 2px solid var(--light-gray);
-    transition: all 0.2s;
-  }
-
-  .avatar-opt:hover { transform: scale(1.1); }
-  .avatar-opt.selected {
-    border-color: var(--orange);
-    box-shadow: 0 0 0 3px rgba(255,107,53,0.25);
-    transform: scale(1.15);
-  }
-
-  /* ===== BUTTON ===== */
-  .btn-primary {
-    width: 100%;
-    background: var(--orange);
-    color: white;
     border: none;
-    padding: 15px;
-    border-radius: 14px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .btn-primary:hover { background: var(--orange-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,53,0.35); }
-  .btn-primary:active { transform: translateY(0); }
-
-  .btn-secondary {
+    background: none;
     width: 100%;
-    background: var(--light-gray);
-    color: var(--gray);
-    border: none;
-    padding: 13px;
-    border-radius: 14px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 8px;
-  }
-
-  .btn-secondary:hover { background: #E5E7EB; color: var(--dark); }
-
-  /* ===== PHONE FLAG ===== */
-  .phone-row {
-    display: flex;
-    gap: 10px;
-  }
-
-  .country-select {
-    width: 110px !important;
-    flex-shrink: 0;
-    padding: 13px 12px !important;
-    font-size: 14px !important;
-  }
-
-  .phone-field { flex: 1; }
-
-  /* ===== SUCCESS ===== */
-  .success-screen {
-    text-align: center;
-    padding: 20px 0;
-  }
-
-  .success-icon {
-    font-size: 72px;
-    display: block;
-    margin-bottom: 16px;
-    animation: popIn 0.5s cubic-bezier(.16,1,.3,1) both;
-  }
-
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.5); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  .success-title {
-    font-family: 'Fredoka One', cursive;
-    font-size: 28px;
-    color: var(--dark);
-    margin-bottom: 8px;
-  }
-
-  .success-desc { font-size: 14px; color: var(--gray); line-height: 1.6; margin-bottom: 24px; }
-
-  .pet-preview {
-    background: var(--warm);
-    border-radius: 20px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
     text-align: left;
   }
 
-  .pet-preview-avatar {
-    width: 64px; height: 64px;
+  .menu-item:hover, .menu-item.active {
+    background: var(--warm);
+    color: var(--orange);
+  }
+
+  .menu-icon { font-size: 20px; }
+
+  .badge {
+    margin-left: auto;
+    background: var(--orange);
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 50px;
+  }
+
+  /* ===== MAIN FEED ===== */
+  .main-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ===== PAGE SECTIONS ===== */
+  .page-section { display: none; flex-direction: column; gap: 20px; }
+  .page-section.active { display: flex; }
+
+  /* ===== CREATE POST ===== */
+  .create-post {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .create-post-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mini-avatar {
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
+    background: linear-gradient(135deg, #FFD166, #FF6B35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .post-input {
+    flex: 1;
+    border: 2px solid var(--light-gray);
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--dark);
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--cream);
+  }
+
+  .post-input:focus { border-color: var(--orange); }
+
+  .create-post-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--light-gray);
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 50px;
+    border: none;
+    background: var(--light-gray);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .action-btn:hover { background: var(--warm); color: var(--orange); }
+
+  .post-submit {
+    margin-left: auto;
+    background: var(--orange);
+    color: white;
+    padding: 8px 22px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .post-submit:hover { background: var(--orange-light); transform: translateY(-1px); }
+
+  /* ===== STORIES ===== */
+  .stories {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .stories::-webkit-scrollbar { display: none; }
+
+  .story {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .story-ring {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, var(--orange), var(--purple), var(--teal));
+  }
+
+  .story-ring.add-story {
+    background: var(--light-gray);
+  }
+
+  .story-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 2px solid var(--white);
+    overflow: hidden;
+  }
+
+  .story-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray);
+    text-align: center;
+    max-width: 62px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ===== POST CARD ===== */
+  .post-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .post-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .post-meta { flex: 1; }
+  .post-author { font-weight: 800; font-size: 15px; }
+  .post-time { font-size: 12px; color: var(--gray); }
+
+  .post-more {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--gray);
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  .post-more:hover { background: var(--light-gray); }
+
+  .post-text {
+    padding: 0 20px 14px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--dark);
+  }
+
+  .post-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    background: linear-gradient(135deg, var(--warm), #FFE4C4);
+  }
+
+  .post-image.teal-bg { background: linear-gradient(135deg, #E0FFFE, #B2F5F0); }
+  .post-image.purple-bg { background: linear-gradient(135deg, #F3E8FF, #DDD6FE); }
+  .post-image.yellow-bg { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); }
+
+  .post-tags {
+    display: flex;
+    gap: 6px;
+    padding: 0 20px 12px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: var(--warm);
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 50px;
+  }
+
+  .post-actions {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-top: 1px solid var(--light-gray);
+    gap: 4px;
+  }
+
+  .react-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    border-radius: 50px;
+    border: none;
+    background: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .react-btn:hover { background: var(--warm); color: var(--orange); transform: scale(1.05); }
+  .react-btn.liked { color: #EF4444; }
+  .react-btn.liked:hover { background: #FEF2F2; color: #EF4444; }
+
+  .share-btn { margin-left: auto; }
+
+  /* ===== SIDEBAR RIGHT ===== */
+  .sidebar-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .widget-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .widget-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 17px;
+    color: var(--dark);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .suggest-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .suggest-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .suggest-info { flex: 1; }
+  .suggest-name { font-weight: 800; font-size: 13px; }
+  .suggest-breed { font-size: 11px; color: var(--gray); }
+
+  .follow-btn {
+    background: var(--orange);
+    color: white;
+    border: none;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .follow-btn:hover { background: var(--orange-light); }
+  .follow-btn.following {
+    background: var(--light-gray);
+    color: var(--gray);
+  }
+
+  .trending-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--light-gray);
+    cursor: pointer;
+  }
+
+  .trending-tag:last-child { border-bottom: none; }
+  .trending-tag:hover .tag-name { color: var(--orange); }
+
+  .tag-name { font-weight: 700; font-size: 13px; color: var(--dark); }
+  .tag-count { font-size: 12px; color: var(--gray); }
+
+  /* ===== ADOPTION PAGE ===== */
+  .adoption-header {
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    border-radius: 20px;
+    padding: 28px;
+    color: white;
+    text-align: center;
+  }
+
+  .adoption-header h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  .adoption-header p { font-size: 14px; opacity: 0.9; }
+
+  .adoption-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-chip {
+    padding: 7px 16px;
+    border-radius: 50px;
+    border: 2px solid var(--light-gray);
+    background: var(--white);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--gray);
+  }
+
+  .filter-chip:hover, .filter-chip.active {
+    border-color: var(--teal);
+    background: #E0FFFE;
+    color: var(--teal);
+  }
+
+  .adoption-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .adopt-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .adopt-card:hover { transform: translateY(-4px); }
+
+  .adopt-image {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    position: relative;
+  }
+
+  .adopt-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--teal);
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 50px;
+  }
+
+  .adopt-urgent { background: var(--orange); }
+
+  .adopt-info { padding: 14px; }
+  .adopt-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 18px;
+    color: var(--dark);
+  }
+  .adopt-details { font-size: 12px; color: var(--gray); margin-top: 3px; margin-bottom: 10px; }
+
+  .adopt-btn {
+    width: 100%;
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 9px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .adopt-btn:hover { background: var(--teal-light); }
+
+  /* ===== COMMUNITY PAGE ===== */
+  .community-header {
+    background: linear-gradient(135deg, var(--purple), #C084FC);
+    border-radius: 20px;
+    padding: 28px;
+    color: white;
+    text-align: center;
+  }
+
+  .community-header h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .group-card {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .group-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+  .group-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .g-orange { background: #FFF0DC; }
+  .g-teal { background: #E0FFFE; }
+  .g-purple { background: #F3E8FF; }
+  .g-yellow { background: #FFFBEB; }
+  .g-pink { background: #FEF2F7; }
+  .g-green { background: #F0FDF4; }
+
+  .group-name { font-weight: 800; font-size: 14px; margin-bottom: 3px; }
+  .group-members { font-size: 12px; color: var(--gray); margin-bottom: 10px; }
+
+  .join-btn {
+    background: var(--purple);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .join-btn:hover { background: #A855F7; }
+  .join-btn.joined { background: var(--light-gray); color: var(--gray); }
+
+  /* ===== PROFILES PAGE ===== */
+  .profile-header-banner {
     background: linear-gradient(135deg, var(--orange), var(--yellow));
+    border-radius: 20px;
+    padding: 28px;
+    color: white;
+    text-align: center;
+  }
+
+  .profile-header-banner h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 26px;
+    margin-bottom: 6px;
+  }
+
+  .profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .pet-profile-card {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow-soft);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .pet-profile-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+  .pet-profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 34px;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+    margin: 0 auto 10px;
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 3px var(--orange);
   }
 
-  .pet-preview-name {
-    font-family: 'Fredoka One', cursive;
-    font-size: 22px;
-    color: var(--dark);
+  .pet-profile-name { font-weight: 800; font-size: 14px; margin-bottom: 2px; }
+  .pet-profile-breed { font-size: 11px; color: var(--gray); margin-bottom: 8px; }
+  .pet-profile-stats { font-size: 12px; color: var(--orange); font-weight: 700; }
+
+  /* ===== NOTIFICATION DOT ===== */
+  .notif-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 4px;
+    animation: pulse 1.5s infinite;
   }
 
-  .pet-preview-detail { font-size: 13px; color: var(--gray); margin-top: 2px; }
-
-  /* ===== RESEND ===== */
-  .resend-row {
-    text-align: center;
-    margin-top: 16px;
-    font-size: 13px;
-    color: var(--gray);
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.3); }
   }
 
-  .resend-btn {
-    background: none;
-    border: none;
-    color: var(--orange);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  /* ===== DIVIDER ===== */
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 20px 0;
-    color: var(--gray);
-    font-size: 13px;
-  }
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--light-gray);
-  }
-
-  /* ===== LOGIN LINK ===== */
-  .login-link {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    color: var(--gray);
-  }
-  .login-link a {
-    color: var(--orange);
-    font-weight: 800;
-    text-decoration: none;
-  }
-
-  /* ===== PROGRESS BAR ===== */
-  .progress-bar {
-    height: 4px;
-    background: var(--light-gray);
-    border-radius: 2px;
-    margin-bottom: 28px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--orange), var(--yellow));
-    border-radius: 2px;
-    transition: width 0.4s ease;
-  }
-
-  /* ===== ERROR MESSAGE ===== */
-  .error-msg {
-    background: #FEF2F2;
-    border: 1px solid #FECACA;
-    color: var(--error);
-    font-size: 13px;
-    font-weight: 700;
-    padding: 10px 14px;
-    border-radius: 10px;
-    margin-top: 8px;
-    display: none;
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar-left, .sidebar-right { display: none; }
   }
 </style>
 </head>
 <body>
 
-<div class="auth-wrapper">
-  <div class="card">
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">
+    <div class="paws-row">
+      <!-- Huella perro (naranja) — más arriba -->
+      <svg width="38" height="42" viewBox="0 0 38 42" style="margin-bottom:10px;">
+        <ellipse cx="19" cy="28" rx="12" ry="9" fill="#FF6B35"/>
+        <ellipse cx="5"  cy="16" rx="5"  ry="6"  fill="#FF6B35"/>
+        <ellipse cx="13" cy="11" rx="5"  ry="6"  fill="#FF6B35"/>
+        <ellipse cx="25" cy="11" rx="5"  ry="6"  fill="#FF6B35"/>
+        <ellipse cx="33" cy="16" rx="5"  ry="6"  fill="#FF6B35"/>
+      </svg>
+      <!-- Huella gato (teal) — más abajo -->
+      <svg width="34" height="38" viewBox="0 0 34 38">
+        <ellipse cx="17" cy="26" rx="10" ry="8"  fill="#2EC4B6"/>
+        <ellipse cx="4"  cy="14" rx="4"  ry="5"  fill="#2EC4B6"/>
+        <ellipse cx="11" cy="10" rx="4"  ry="5"  fill="#2EC4B6"/>
+        <ellipse cx="21" cy="10" rx="4"  ry="5"  fill="#2EC4B6"/>
+        <ellipse cx="29" cy="14" rx="4"  ry="5"  fill="#2EC4B6"/>
+      </svg>
+    </div>
+    Cachorritos
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('feed', this)">🏠 Inicio</button>
+    <button class="nav-btn" onclick="showPage('perfiles', this)">🐶 Perfiles</button>
+    <button class="nav-btn" onclick="showPage('adopciones', this)">❤️ Adopciones</button>
+    <button class="nav-btn" onclick="showPage('comunidad', this)">👥 Comunidad</button>
+  </div>
+  <div class="nav-avatar">🐱</div>
+</nav>
 
-    <!-- LOGO -->
-    <div class="logo">
-      <div class="logo-icon">
-        <svg width="38" height="42" viewBox="0 0 38 42" style="margin-bottom:10px;">
-          <ellipse cx="19" cy="28" rx="12" ry="9" fill="#FF6B35"/>
-          <ellipse cx="5"  cy="16" rx="5"  ry="6"  fill="#FF6B35"/>
-          <ellipse cx="13" cy="11" rx="5"  ry="6"  fill="#FF6B35"/>
-          <ellipse cx="25" cy="11" rx="5"  ry="6"  fill="#FF6B35"/>
-          <ellipse cx="33" cy="16" rx="5"  ry="6"  fill="#FF6B35"/>
-        </svg>
-        <svg width="34" height="38" viewBox="0 0 34 38">
-          <ellipse cx="17" cy="26" rx="10" ry="8"  fill="#2EC4B6"/>
-          <ellipse cx="4"  cy="14" rx="4"  ry="5"  fill="#2EC4B6"/>
-          <ellipse cx="11" cy="10" rx="4"  ry="5"  fill="#2EC4B6"/>
-          <ellipse cx="21" cy="10" rx="4"  ry="5"  fill="#2EC4B6"/>
-          <ellipse cx="29" cy="14" rx="4"  ry="5"  fill="#2EC4B6"/>
-        </svg>
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR LEFT -->
+  <aside class="sidebar-left">
+    <div class="profile-card">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar">🐱</div>
+        <div class="online-badge"></div>
       </div>
-      <div class="logo-text">Cachorritos</div>
-      <div class="logo-sub">La red social de tus mascotas</div>
+      <div class="profile-name">Michi López</div>
+      <div class="profile-sub">Gato Persa · 3 años</div>
+      <div class="profile-stats">
+        <div class="stat"><div class="stat-num">48</div><div class="stat-label">posts</div></div>
+        <div class="stat"><div class="stat-num">312</div><div class="stat-label">amigos</div></div>
+        <div class="stat"><div class="stat-num">205</div><div class="stat-label">fotos</div></div>
+      </div>
     </div>
 
-    <!-- PROGRESS -->
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress" style="width:25%"></div>
+    <div class="menu-card">
+      <button class="menu-item active" onclick="showPage('feed', null)"><span class="menu-icon">🏠</span> Inicio</button>
+      <button class="menu-item" onclick="showPage('perfiles', null)"><span class="menu-icon">🐾</span> Mis Mascotas</button>
+      <button class="menu-item" onclick="showPage('adopciones', null)"><span class="menu-icon">❤️</span> Adopciones <span class="badge">5</span></button>
+      <button class="menu-item" onclick="showPage('comunidad', null)"><span class="menu-icon">👥</span> Comunidad</button>
+      <button class="menu-item"><span class="menu-icon">💬</span> Mensajes <span class="badge">3</span></button>
+      <button class="menu-item"><span class="menu-icon">🔔</span> Notificaciones</button>
+      <button class="menu-item"><span class="menu-icon">⚙️</span> Configuración</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-feed">
+
+    <!-- FEED PAGE -->
+    <div id="page-feed" class="page-section active">
+
+      <!-- Stories -->
+      <div class="stories">
+        <div class="story">
+          <div class="story-ring add-story">
+            <div class="story-inner" style="background:var(--warm); font-size:32px;">➕</div>
+          </div>
+          <div class="story-name">Tu historia</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐶</div>
+          </div>
+          <div class="story-name">Rufus</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐰</div>
+          </div>
+          <div class="story-name">Bunny</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐹</div>
+          </div>
+          <div class="story-name">Poquito</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🦜</div>
+          </div>
+          <div class="story-name">Loro Verde</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐠</div>
+          </div>
+          <div class="story-name">Nemo</div>
+        </div>
+        <div class="story">
+          <div class="story-ring">
+            <div class="story-inner">🐢</div>
+          </div>
+          <div class="story-name">Turbo</div>
+        </div>
+      </div>
+
+      <!-- Create Post -->
+      <div class="create-post">
+        <div class="create-post-top">
+          <div class="mini-avatar">🐱</div>
+          <input class="post-input" type="text" placeholder="¿Qué está haciendo Michi hoy? 🐾">
+        </div>
+        <div class="create-post-actions">
+          <button class="action-btn">📷 Foto</button>
+          <button class="action-btn">🎥 Video</button>
+          <button class="action-btn">😊 Emoción</button>
+          <button class="post-submit" onclick="addPost()">Publicar</button>
+        </div>
+      </div>
+
+      <!-- Posts -->
+      <div id="posts-container">
+        <div style="text-align:center;padding:32px;color:var(--gray)">Cargando posts... 🐾</div>
+      </div>
     </div>
 
-    <!-- STEPS DOTS -->
-    <div class="steps">
-      <div class="step-dot active" id="dot-1"></div>
-      <div class="step-dot" id="dot-2"></div>
-      <div class="step-dot" id="dot-3"></div>
-      <div class="step-dot" id="dot-4"></div>
+    <!-- PERFILES PAGE -->
+    <div id="page-perfiles" class="page-section">
+      <div class="profile-header-banner">
+        <h2>🐾 Perfiles de Mascotas</h2>
+        <p>Conoce a los cachorritos de nuestra comunidad</p>
+      </div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="filter-chip active" onclick="setFilter(this)">Todos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐶 Perros</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐱 Gatos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐰 Conejos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐹 Roedores</button>
+        <button class="filter-chip" onclick="setFilter(this)">🦜 Aves</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐠 Peces</button>
+      </div>
+
+      <div class="profiles-grid">
+        <div class="pet-profile-card">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#FFD166,#FF6B35)">🐶</div>
+          <div class="pet-profile-name">Rufus García</div>
+          <div class="pet-profile-breed">Golden Retriever · 2 años</div>
+          <div class="pet-profile-stats">312 amigos · 48 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.05s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#E0FFFE,#2EC4B6)">🐱</div>
+          <div class="pet-profile-name">Luna Martínez</div>
+          <div class="pet-profile-breed">Gato Siamés · 4 años</div>
+          <div class="pet-profile-stats">205 amigos · 33 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.1s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#F3E8FF,#9B5DE5)">🐰</div>
+          <div class="pet-profile-name">Bunny Rodríguez</div>
+          <div class="pet-profile-breed">Holland Lop · 1 año</div>
+          <div class="pet-profile-stats">178 amigos · 22 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.15s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#FEF2F7,#EC4899)">🐹</div>
+          <div class="pet-profile-name">Poquito Sánchez</div>
+          <div class="pet-profile-breed">Hámster Sirio · 8 meses</div>
+          <div class="pet-profile-stats">89 amigos · 15 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.2s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#F0FDF4,#22C55E)">🦜</div>
+          <div class="pet-profile-name">Verde López</div>
+          <div class="pet-profile-breed">Loro Amazónico · 6 años</div>
+          <div class="pet-profile-stats">421 amigos · 71 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.25s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#EFF6FF,#3B82F6)">🐠</div>
+          <div class="pet-profile-name">Nemo Jiménez</div>
+          <div class="pet-profile-breed">Pez Payaso · 2 años</div>
+          <div class="pet-profile-stats">54 amigos · 9 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.3s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#FFFBEB,#F59E0B)">🐢</div>
+          <div class="pet-profile-name">Turbo Pérez</div>
+          <div class="pet-profile-breed">Tortuga Rusa · 12 años</div>
+          <div class="pet-profile-stats">134 amigos · 18 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.35s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#FEF2F7,#F43F5E)">🐕</div>
+          <div class="pet-profile-name">Coco Flores</div>
+          <div class="pet-profile-breed">Chihuahua · 5 años</div>
+          <div class="pet-profile-stats">267 amigos · 41 posts</div>
+        </div>
+        <div class="pet-profile-card" style="animation-delay:0.4s">
+          <div class="pet-profile-avatar" style="background:linear-gradient(135deg,#F0FDF4,#16A34A)">🐍</div>
+          <div class="pet-profile-name">Slinky Torres</div>
+          <div class="pet-profile-breed">Serpiente Ball Python · 3 años</div>
+          <div class="pet-profile-stats">98 amigos · 12 posts</div>
+        </div>
+      </div>
     </div>
 
-    <!-- ===== STEP 1: TELÉFONO ===== -->
-    <div class="step active" id="step-1">
-      <div class="step-title">📱 Tu número de teléfono</div>
-      <div class="step-desc">Te enviaremos un código para verificar que eres tú. Sin contraseñas complicadas.</div>
+    <!-- ADOPCIONES PAGE -->
+    <div id="page-adopciones" class="page-section">
+      <div class="adoption-header">
+        <h2>❤️ Adopta un Peludito</h2>
+        <p>Dale un hogar a quien más lo necesita</p>
+      </div>
 
-      <div class="field">
-        <label>País y número</label>
-        <div class="phone-row">
-          <select class="country-select" id="country-code">
-            <option value="+598" selected>🇺🇾 +598</option>
-            <option value="+54">🇦🇷 +54</option>
-            <option value="+55">🇧🇷 +55</option>
-            <option value="+56">🇨🇱 +56</option>
-            <option value="+57">🇨🇴 +57</option>
-            <option value="+51">🇵🇪 +51</option>
-            <option value="+58">🇻🇪 +58</option>
-            <option value="+52">🇲🇽 +52</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+34">🇪🇸 +34</option>
-          </select>
-          <div class="phone-field">
-            <input type="tel" id="phone-input" placeholder="099 123 456" maxlength="12">
+      <div class="adoption-filters">
+        <button class="filter-chip active" onclick="setFilter(this)">Todos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐶 Perros</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐱 Gatos</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐰 Pequeños</button>
+        <button class="filter-chip" onclick="setFilter(this)">🐣 Cachorros</button>
+        <button class="filter-chip" onclick="setFilter(this)">👴 Adultos</button>
+      </div>
+
+      <div class="adoption-grid">
+        <div class="adopt-card">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#FFF0DC,#FFD166)">
+            🐕 <div class="adopt-badge adopt-urgent">⚡ Urgente</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Max</div>
+            <div class="adopt-details">🐶 Labrador · 1 año · Macho<br>📍 Ciudad de México</div>
+            <button class="adopt-btn">❤️ Quiero adoptarlo</button>
           </div>
         </div>
-        <div class="input-hint">Solo para verificación, no compartimos tu número 🔒</div>
-      </div>
-
-      <div class="error-msg" id="err-1">Por favor ingresa un número válido de 10 dígitos.</div>
-
-      <button class="btn-primary" onclick="goToStep2()">
-        Enviar código SMS 📲
-      </button>
-    </div>
-
-    <!-- ===== STEP 2: VERIFICACIÓN OTP ===== -->
-    <div class="step" id="step-2">
-      <div class="step-title">🔐 Código de verificación</div>
-      <div class="step-desc" id="otp-desc">Ingresa el código de 6 dígitos que enviamos a tu número.</div>
-
-      <div class="otp-wrap">
-        <input class="otp-input" type="tel" maxlength="1" id="otp-1" oninput="otpMove(this, null, 'otp-2')">
-        <input class="otp-input" type="tel" maxlength="1" id="otp-2" oninput="otpMove(this, 'otp-1', 'otp-3')">
-        <input class="otp-input" type="tel" maxlength="1" id="otp-3" oninput="otpMove(this, 'otp-2', 'otp-4')">
-        <input class="otp-input" type="tel" maxlength="1" id="otp-4" oninput="otpMove(this, 'otp-3', 'otp-5')">
-        <input class="otp-input" type="tel" maxlength="1" id="otp-5" oninput="otpMove(this, 'otp-4', 'otp-6')">
-        <input class="otp-input" type="tel" maxlength="1" id="otp-6" oninput="otpMove(this, 'otp-5', null)">
-      </div>
-
-      <div class="error-msg" id="err-2">Código incorrecto. Para probar usa: 123456</div>
-
-      <button class="btn-primary" onclick="verifyOTP()">
-        Verificar código ✅
-      </button>
-      <button class="btn-secondary" onclick="goTo(1)">← Cambiar número</button>
-
-      <div class="resend-row">
-        ¿No recibiste el código? <button class="resend-btn" onclick="resendCode()">Reenviar</button>
-      </div>
-    </div>
-
-    <!-- ===== STEP 3: PERFIL DE MASCOTA ===== -->
-    <div class="step" id="step-3">
-      <div class="step-title">🐾 Crea el perfil de tu mascota</div>
-      <div class="step-desc">Cada mascota tiene su propio perfil. ¡Cuéntanos sobre ella!</div>
-
-      <!-- Avatar -->
-      <div class="field">
-        <label>Elige su foto de perfil</label>
-        <div class="avatar-grid" id="avatar-grid">
-          <div class="avatar-opt selected" onclick="selectAvatar(this, '🐶')" style="background:#FFF0DC">🐶</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🐱')" style="background:#E0FFFE">🐱</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🐰')" style="background:#F3E8FF">🐰</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🐹')" style="background:#FEF2F7">🐹</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🦜')" style="background:#F0FDF4">🦜</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🐠')" style="background:#EFF6FF">🐠</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🐢')" style="background:#FFFBEB">🐢</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🐍')" style="background:#F0FDF4">🐍</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🐦')" style="background:#EFF6FF">🐦</div>
-          <div class="avatar-opt" onclick="selectAvatar(this, '🦔')" style="background:#FFF0DC">🦔</div>
-        </div>
-      </div>
-
-      <!-- Nombre -->
-      <div class="field">
-        <label>Nombre de tu mascota 🏷️</label>
-        <input type="text" id="pet-name" placeholder="ej. Firulais, Luna, Max..." maxlength="30">
-      </div>
-
-      <!-- Especie -->
-      <div class="field">
-        <label>¿Qué tipo de animal es?</label>
-        <div class="species-grid">
-          <button class="species-btn selected" onclick="selectSpecies(this, 'Perro')">
-            <span class="species-emoji">🐶</span>
-            <span class="species-label">Perro</span>
-          </button>
-          <button class="species-btn" onclick="selectSpecies(this, 'Gato')">
-            <span class="species-emoji">🐱</span>
-            <span class="species-label">Gato</span>
-          </button>
-          <button class="species-btn" onclick="selectSpecies(this, 'Conejo')">
-            <span class="species-emoji">🐰</span>
-            <span class="species-label">Conejo</span>
-          </button>
-          <button class="species-btn" onclick="selectSpecies(this, 'Ave')">
-            <span class="species-emoji">🦜</span>
-            <span class="species-label">Ave</span>
-          </button>
-          <button class="species-btn" onclick="selectSpecies(this, 'Roedor')">
-            <span class="species-emoji">🐹</span>
-            <span class="species-label">Roedor</span>
-          </button>
-          <button class="species-btn" onclick="selectSpecies(this, 'Otro')">
-            <span class="species-emoji">🐾</span>
-            <span class="species-label">Otro</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Raza y Edad en fila -->
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-        <div class="field" style="margin-bottom:0">
-          <label>Raza</label>
-          <input type="text" id="pet-breed" placeholder="ej. Labrador">
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <label>Edad</label>
-          <select id="pet-age">
-            <option value="">Selecciona</option>
-            <option>Menos de 1 año</option>
-            <option>1 año</option>
-            <option>2 años</option>
-            <option>3 años</option>
-            <option>4 años</option>
-            <option>5 años</option>
-            <option>6-10 años</option>
-            <option>Más de 10 años</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field" style="margin-top:16px">
-        <label>Bio (opcional) ✍️</label>
-        <textarea id="pet-bio" placeholder="ej. Me llamo Luna, amo dormir al sol y cazar ratones de juguete 😸"></textarea>
-      </div>
-
-      <div class="error-msg" id="err-3">Por favor ingresa al menos el nombre de tu mascota.</div>
-
-      <button class="btn-primary" onclick="goToStep4()">
-        ¡Crear perfil! 🎉
-      </button>
-    </div>
-
-    <!-- ===== STEP 4: ÉXITO ===== -->
-    <div class="step" id="step-4">
-      <div class="success-screen">
-        <span class="success-icon">🎉</span>
-        <div class="success-title">¡Bienvenido a Cachorritos!</div>
-        <div class="success-desc">El perfil de tu mascota está listo. Ya puedes empezar a conectar con otros cachorritos.</div>
-
-        <div class="pet-preview">
-          <div class="pet-preview-avatar" id="preview-avatar">🐶</div>
-          <div>
-            <div class="pet-profile-name" id="preview-name" style="font-family:'Fredoka One',cursive; font-size:22px; color:#1A1A2E;"></div>
-            <div class="pet-preview-detail" id="preview-detail"></div>
-            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;" id="preview-tags"></div>
+        <div class="adopt-card" style="animation-delay:0.05s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#E0FFFE,#B2F5F0)">
+            🐈 <div class="adopt-badge">Disponible</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Mia</div>
+            <div class="adopt-details">🐱 Mestiza · 2 años · Hembra<br>📍 Guadalajara</div>
+            <button class="adopt-btn">❤️ Quiero adoptarla</button>
           </div>
         </div>
-
-        <button class="btn-primary" onclick="irAlFeed()">
-          Ir a mi feed 🐾
-        </button>
-        <button class="btn-secondary" onclick="addAnotherPet()">
-          + Agregar otra mascota
-        </button>
+        <div class="adopt-card" style="animation-delay:0.1s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#F3E8FF,#DDD6FE)">
+            🐇 <div class="adopt-badge">Disponible</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Snowball</div>
+            <div class="adopt-details">🐰 Conejo Blanco · 8 meses · Hembra<br>📍 Monterrey</div>
+            <button class="adopt-btn">❤️ Quiero adoptarla</button>
+          </div>
+        </div>
+        <div class="adopt-card" style="animation-delay:0.15s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#FEF2F7,#FBCFE8)">
+            🐶 <div class="adopt-badge adopt-urgent">⚡ Urgente</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Rocky</div>
+            <div class="adopt-details">🐶 Pitbull · 3 años · Macho<br>📍 Puebla</div>
+            <button class="adopt-btn">❤️ Quiero adoptarlo</button>
+          </div>
+        </div>
+        <div class="adopt-card" style="animation-delay:0.2s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#F0FDF4,#BBF7D0)">
+            🐢 <div class="adopt-badge">Disponible</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Turbo Jr.</div>
+            <div class="adopt-details">🐢 Tortuga · 4 años · Macho<br>📍 CDMX</div>
+            <button class="adopt-btn">❤️ Quiero adoptarlo</button>
+          </div>
+        </div>
+        <div class="adopt-card" style="animation-delay:0.25s">
+          <div class="adopt-image" style="background:linear-gradient(135deg,#FFFBEB,#FDE68A)">
+            🐱 <div class="adopt-badge">Disponible</div>
+          </div>
+          <div class="adopt-info">
+            <div class="adopt-name">Naranja</div>
+            <div class="adopt-details">🐱 Gato Naranja · 1 año · Macho<br>📍 León</div>
+            <button class="adopt-btn">❤️ Quiero adoptarlo</button>
+          </div>
+        </div>
       </div>
     </div>
 
-  </div>
+    <!-- COMUNIDAD PAGE -->
+    <div id="page-comunidad" class="page-section">
+      <div class="community-header">
+        <h2>👥 Comunidad Cachorritos</h2>
+        <p>Únete a grupos y conecta con dueños como tú</p>
+      </div>
 
-  <!-- LOGIN LINK (solo en step 1) -->
-  <div class="login-link" id="login-row">
-    ¿Ya tienes cuenta? <a href="#" onclick="showLogin()">Inicia sesión</a>
-  </div>
+      <div style="background:var(--white); border-radius:16px; padding:16px; box-shadow:var(--shadow-soft);">
+        <input class="post-input" style="width:100%; border-radius:12px;" type="text" placeholder="🔍 Buscar grupos por tema o especie...">
+      </div>
+
+      <div class="groups-grid">
+        <div class="group-card">
+          <div class="group-icon g-orange">🐶</div>
+          <div class="group-name">Amantes de los Perros</div>
+          <div class="group-members">👤 12,400 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.05s">
+          <div class="group-icon g-teal">🐱</div>
+          <div class="group-name">Gateros Unidos</div>
+          <div class="group-members">👤 9,870 miembros</div>
+          <button class="join-btn joined">✓ Unido</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.1s">
+          <div class="group-icon g-purple">🐰</div>
+          <div class="group-name">Club de Conejos</div>
+          <div class="group-members">👤 3,210 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.15s">
+          <div class="group-icon g-yellow">🦜</div>
+          <div class="group-name">Aves Exóticas</div>
+          <div class="group-members">👤 5,680 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.2s">
+          <div class="group-icon g-pink">🏥</div>
+          <div class="group-name">Salud y Veterinaria</div>
+          <div class="group-members">👤 18,900 miembros</div>
+          <button class="join-btn joined">✓ Unido</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.25s">
+          <div class="group-icon g-green">🌿</div>
+          <div class="group-name">Alimentación Natural</div>
+          <div class="group-members">👤 7,450 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.3s">
+          <div class="group-icon g-orange">🐾</div>
+          <div class="group-name">Rescatistas Héroes</div>
+          <div class="group-members">👤 22,300 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+        <div class="group-card" style="animation-delay:0.35s">
+          <div class="group-icon g-teal">🎓</div>
+          <div class="group-name">Entrenamiento Positivo</div>
+          <div class="group-members">👤 4,120 miembros</div>
+          <button class="join-btn">Unirse</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR RIGHT -->
+  <aside class="sidebar-right">
+    <div class="widget-card">
+      <div class="widget-title">🐾 Sugerencias para seguir</div>
+      <div class="suggest-item">
+        <div class="suggest-avatar" style="background:linear-gradient(135deg,#FFFBEB,#F59E0B)">🐢</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Turbo Pérez</div>
+          <div class="suggest-breed">Tortuga Rusa</div>
+        </div>
+        <button class="follow-btn" onclick="toggleFollow(this)">Seguir</button>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-avatar" style="background:linear-gradient(135deg,#F0FDF4,#22C55E)">🦜</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Verde López</div>
+          <div class="suggest-breed">Loro Amazónico</div>
+        </div>
+        <button class="follow-btn" onclick="toggleFollow(this)">Seguir</button>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-avatar" style="background:linear-gradient(135deg,#EFF6FF,#3B82F6)">🐠</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Nemo Jiménez</div>
+          <div class="suggest-breed">Pez Payaso</div>
+        </div>
+        <button class="follow-btn" onclick="toggleFollow(this)">Seguir</button>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-avatar" style="background:linear-gradient(135deg,#FEF2F7,#EC4899)">🐹</div>
+        <div class="suggest-info">
+          <div class="suggest-name">Poquito Sánchez</div>
+          <div class="suggest-breed">Hámster Sirio</div>
+        </div>
+        <button class="follow-btn" onclick="toggleFollow(this)">Seguir</button>
+      </div>
+    </div>
+
+    <div class="widget-card">
+      <div class="widget-title">🔥 Trending</div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#GatosDormilones</div>
+          <div class="tag-count">2,340 publicaciones</div>
+        </div>
+        <span>🐱</span>
+      </div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#AdoptaNoCompres</div>
+          <div class="tag-count">1,890 publicaciones</div>
+        </div>
+        <span>❤️</span>
+      </div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#PerrosFelices</div>
+          <div class="tag-count">3,120 publicaciones</div>
+        </div>
+        <span>🐶</span>
+      </div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#MascotasExóticas</div>
+          <div class="tag-count">876 publicaciones</div>
+        </div>
+        <span>🦜</span>
+      </div>
+      <div class="trending-tag">
+        <div>
+          <div class="tag-name">#VidaPeludita</div>
+          <div class="tag-count">5,670 publicaciones</div>
+        </div>
+        <span>🌟</span>
+      </div>
+    </div>
+
+    <div class="widget-card" style="background:linear-gradient(135deg,var(--orange),var(--orange-light)); color:white;">
+      <div style="font-family:'Fredoka One',cursive; font-size:18px; margin-bottom:8px;">🌟 Cachorritos Premium</div>
+      <div style="font-size:13px; opacity:0.9; margin-bottom:14px;">Sin anuncios, perfiles verificados y estadísticas avanzadas.</div>
+      <button style="background:white; color:var(--orange); border:none; padding:8px 20px; border-radius:50px; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; cursor:pointer; width:100%;">Ver planes ✨</button>
+    </div>
+  </aside>
+
 </div>
 
 <script>
-  let currentStep = 1;
-  let selectedAvatar = '🐶';
-  let selectedSpecies = 'Perro';
-  let phone = '';
-
-  const progressMap = { 1: 25, 2: 50, 3: 75, 4: 100 };
-
-  function goTo(step) {
-    document.getElementById('step-' + currentStep).classList.remove('active');
-    document.getElementById('dot-' + currentStep).classList.remove('active');
-    document.getElementById('dot-' + currentStep).classList.add('done');
-
-    currentStep = step;
-    document.getElementById('step-' + currentStep).classList.add('active');
-    document.getElementById('dot-' + currentStep).classList.remove('done');
-    document.getElementById('dot-' + currentStep).classList.add('active');
-    document.getElementById('progress').style.width = progressMap[step] + '%';
-    document.getElementById('login-row').style.display = step === 1 ? 'block' : 'none';
+  function showPage(page, btn) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
   }
 
-  function goToStep2() {
-    const input = document.getElementById('phone-input').value.replace(/\s/g, '');
-    const err = document.getElementById('err-1');
-    if (input.length < 8) {
-      err.style.display = 'block';
-      return;
-    }
-    err.style.display = 'none';
-    phone = document.getElementById('country-code').value + ' ' + input;
-    document.getElementById('otp-desc').textContent = 'Código enviado a ' + phone + '. Para esta demo usa 123456.';
-    goTo(2);
-    setTimeout(() => document.getElementById('otp-1').focus(), 300);
-  }
-
-  function otpMove(input, prevId, nextId) {
-    if (input.value && nextId) {
-      document.getElementById(nextId).focus();
-    }
-    if (!input.value && prevId) {
-      // backspace handled via keydown
-    }
-    // Auto verify when all filled
-    const all = ['otp-1','otp-2','otp-3','otp-4','otp-5','otp-6'];
-    const filled = all.every(id => document.getElementById(id).value);
-    if (filled) setTimeout(verifyOTP, 200);
-  }
-
-  // Handle backspace
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Backspace') {
-      const otp = ['otp-1','otp-2','otp-3','otp-4','otp-5','otp-6'];
-      const active = document.activeElement;
-      const idx = otp.indexOf(active.id);
-      if (idx > 0 && !active.value) {
-        document.getElementById(otp[idx-1]).focus();
-      }
-    }
-  });
-
-  function verifyOTP() {
-    const code = ['otp-1','otp-2','otp-3','otp-4','otp-5','otp-6']
-      .map(id => document.getElementById(id).value).join('');
-    const err = document.getElementById('err-2');
-    if (code === '123456') {
-      err.style.display = 'none';
-      goTo(3);
+  function toggleLike(btn) {
+    const span = btn.querySelector('span');
+    const num = parseInt(span.textContent);
+    if (btn.classList.contains('liked')) {
+      btn.classList.remove('liked');
+      span.textContent = num - 1;
     } else {
-      err.style.display = 'block';
-      ['otp-1','otp-2','otp-3','otp-4','otp-5','otp-6'].forEach(id => {
-        const el = document.getElementById(id);
-        el.value = '';
-        el.style.borderColor = '#EF4444';
-        setTimeout(() => el.style.borderColor = '', 1500);
-      });
-      document.getElementById('otp-1').focus();
+      btn.classList.add('liked');
+      span.textContent = num + 1;
     }
   }
 
-  function resendCode() {
-    ['otp-1','otp-2','otp-3','otp-4','otp-5','otp-6'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('err-2').style.display = 'none';
-    document.getElementById('otp-1').focus();
-    const btn = document.querySelector('.resend-btn');
-    btn.textContent = '¡Enviado!';
-    btn.style.color = 'var(--teal)';
-    setTimeout(() => { btn.textContent = 'Reenviar'; btn.style.color = ''; }, 3000);
-  }
-
-  function selectAvatar(el, emoji) {
-    document.querySelectorAll('.avatar-opt').forEach(a => a.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedAvatar = emoji;
-  }
-
-  function selectSpecies(el, species) {
-    document.querySelectorAll('.species-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedSpecies = species;
-  }
-
-  async function goToStep4() {
-    const name = document.getElementById('pet-name').value.trim();
-    const err = document.getElementById('err-3');
-    if (!name) { err.style.display = 'block'; return; }
-    err.style.display = 'none';
-
-    const breed = document.getElementById('pet-breed').value.trim();
-    const age = document.getElementById('pet-age').value;
-    const bio = document.getElementById('pet-bio') ? document.getElementById('pet-bio').value.trim() : '';
-
-    // Guardar usuario en Supabase
-    let usuarioId = localStorage.getItem('cachorritos_usuario_id');
-    if (!usuarioId) {
-      const { data: usuario, error: errU } = await db
-        .from('usuarios')
-        .upsert({ telefono: phone }, { onConflict: 'telefono' })
-        .select()
-        .single();
-      if (!errU && usuario) {
-        usuarioId = usuario.id;
-        localStorage.setItem('cachorritos_usuario_id', usuarioId);
-        localStorage.setItem('cachorritos_telefono', phone);
-      }
+  function toggleFollow(btn) {
+    if (btn.classList.contains('following')) {
+      btn.classList.remove('following');
+      btn.textContent = 'Seguir';
+    } else {
+      btn.classList.add('following');
+      btn.textContent = '✓ Siguiendo';
     }
-
-    // Guardar mascota en Supabase
-    if (usuarioId) {
-      const { error: errM } = await db.from('mascotas').insert({
-        usuario_id: usuarioId,
-        nombre: name,
-        especie: selectedSpecies,
-        raza: breed || null,
-        edad: age || null,
-        bio: bio || null,
-        avatar: selectedAvatar
-      });
-      if (errM) console.error('Error guardando mascota:', errM);
-    }
-
-    // Build preview
-    document.getElementById('preview-avatar').textContent = selectedAvatar;
-    document.getElementById('preview-name').textContent = name;
-    let detail = selectedSpecies;
-    if (breed) detail += ' · ' + breed;
-    if (age) detail += ' · ' + age;
-    document.getElementById('preview-detail').textContent = detail;
-
-    const tagsEl = document.getElementById('preview-tags');
-    tagsEl.innerHTML = '';
-    ['Nuevo en Cachorritos 🌟', selectedSpecies + ' 🐾'].forEach(t => {
-      const span = document.createElement('span');
-      span.style.cssText = 'background:white;color:var(--orange);font-size:11px;font-weight:700;padding:2px 10px;border-radius:50px;';
-      span.textContent = t;
-      tagsEl.appendChild(span);
-    });
-
-    goTo(4);
   }
 
-  function irAlFeed() {
-    window.location.href = 'cachorritos.html';
+  function setFilter(btn) {
+    btn.closest('div').querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
   }
 
-  function addAnotherPet() {
-    // Reset step 3
-    document.getElementById('pet-name').value = '';
-    document.getElementById('pet-breed').value = '';
-    document.getElementById('pet-age').value = '';
-    document.getElementById('pet-bio').value = '';
-    selectedAvatar = '🐶';
-    selectedSpecies = 'Perro';
-    document.querySelectorAll('.avatar-opt').forEach((a,i) => { a.classList.toggle('selected', i===0); });
-    document.querySelectorAll('.species-btn').forEach((b,i) => { b.classList.toggle('selected', i===0); });
-    goTo(3);
+  // ===== FEED DINÁMICO CON SUPABASE =====
+
+  function tiempoRelativo(fecha) {
+    const diff = Math.floor((Date.now() - new Date(fecha)) / 1000);
+    if (diff < 60) return 'Ahora mismo';
+    if (diff < 3600) return `Hace ${Math.floor(diff/60)} min`;
+    if (diff < 86400) return `Hace ${Math.floor(diff/3600)} h`;
+    return `Hace ${Math.floor(diff/86400)} días`;
   }
 
-  function showLogin() {
-    // Simple login simulation
-    const card = document.querySelector('.card');
-    card.style.animation = 'none';
+  function crearTarjetaPost(post) {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.dataset.postId = post.id;
+    const mascota = post.mascotas || {};
+    const avatar = mascota.avatar || '🐾';
+    const nombre = mascota.nombre || 'Mascota';
+    const especie = mascota.especie || '';
+    const tiempo = tiempoRelativo(post.created_at);
     card.innerHTML = `
-      <div class="logo">
-        <div class="logo-icon">
-          <svg width="38" height="42" viewBox="0 0 38 42" style="margin-bottom:10px;"><ellipse cx="19" cy="28" rx="12" ry="9" fill="#FF6B35"/><ellipse cx="5" cy="16" rx="5" ry="6" fill="#FF6B35"/><ellipse cx="13" cy="11" rx="5" ry="6" fill="#FF6B35"/><ellipse cx="25" cy="11" rx="5" ry="6" fill="#FF6B35"/><ellipse cx="33" cy="16" rx="5" ry="6" fill="#FF6B35"/></svg>
-          <svg width="34" height="38" viewBox="0 0 34 38"><ellipse cx="17" cy="26" rx="10" ry="8" fill="#2EC4B6"/><ellipse cx="4" cy="14" rx="4" ry="5" fill="#2EC4B6"/><ellipse cx="11" cy="10" rx="4" ry="5" fill="#2EC4B6"/><ellipse cx="21" cy="10" rx="4" ry="5" fill="#2EC4B6"/><ellipse cx="29" cy="14" rx="4" ry="5" fill="#2EC4B6"/></svg>
+      <div class="post-header">
+        <div class="post-avatar" style="background:linear-gradient(135deg,#FFD166,#FF6B35)">${avatar}</div>
+        <div class="post-meta">
+          <div class="post-author">${nombre}</div>
+          <div class="post-time">${tiempo} · ${especie}</div>
         </div>
-        <div class="logo-text">Cachorritos</div>
-        <div class="logo-sub">Inicia sesión</div>
+        <button class="post-more">•••</button>
       </div>
-      <div class="step active">
-        <div class="step-title">📱 Bienvenido de vuelta</div>
-        <div class="step-desc">Ingresa tu número para recibir tu código de acceso.</div>
-        <div class="field">
-          <label>Número de teléfono</label>
-          <div class="phone-row">
-            <select class="country-select"><option>🇲🇽 +52</option></select>
-            <div class="phone-field"><input type="tel" placeholder="099 123 456"></div>
-          </div>
-        </div>
-        <button class="btn-primary" onclick="window.location.href='cachorritos.html'">Enviar código 📲</button>
-        <button class="btn-secondary" onclick="location.reload()">← Crear cuenta nueva</button>
+      <div class="post-text">${post.contenido || ''}</div>
+      <div class="post-actions">
+        <button class="react-btn" onclick="toggleLike(this)" data-post-id="${post.id}">🐾 <span>${post.likes || 0}</span></button>
+        <button class="react-btn">💬 <span>0 comentarios</span></button>
+        <button class="react-btn share-btn">↗️ Compartir</button>
       </div>
     `;
+    return card;
   }
+
+  async function cargarPosts() {
+    const container = document.getElementById('posts-container');
+    container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--gray)">Cargando posts... 🐾</div>';
+    const { data: posts, error } = await db
+      .from('posts')
+      .select('*, mascotas(nombre, especie, avatar)')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (error || !posts || posts.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--gray)">¡Sé el primero en publicar! 🐾</div>';
+      return;
+    }
+    container.innerHTML = '';
+    posts.forEach(post => container.appendChild(crearTarjetaPost(post)));
+  }
+
+  async function addPost() {
+    const input = document.querySelector('.post-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const usuarioId = localStorage.getItem('cachorritos_usuario_id');
+
+    // Buscar la primera mascota del usuario
+    let mascotaId = null;
+    if (usuarioId) {
+      const { data: mascotas } = await db
+        .from('mascotas')
+        .select('id')
+        .eq('usuario_id', usuarioId)
+        .limit(1);
+      if (mascotas && mascotas.length > 0) mascotaId = mascotas[0].id;
+    }
+
+    const { data: post, error } = await db.from('posts').insert({
+      contenido: text,
+      usuario_id: usuarioId || null,
+      mascota_id: mascotaId || null,
+      likes: 0
+    }).select('*, mascotas(nombre, especie, avatar)').single();
+
+    if (!error && post) {
+      const container = document.getElementById('posts-container');
+      const noPost = container.querySelector('div[style]');
+      if (noPost) noPost.remove();
+      container.insertBefore(crearTarjetaPost(post), container.firstChild);
+    }
+    input.value = '';
+  }
+
+  async function toggleLike(btn) {
+    const span = btn.querySelector('span');
+    const num = parseInt(span.textContent);
+    const postId = btn.dataset.postId;
+    const liked = btn.classList.contains('liked');
+    const nuevoLikes = liked ? num - 1 : num + 1;
+
+    btn.classList.toggle('liked');
+    span.textContent = nuevoLikes;
+
+    if (postId) {
+      await db.from('posts').update({ likes: nuevoLikes }).eq('id', postId);
+    }
+  }
+
+  // Cargar posts al iniciar
+  document.addEventListener('DOMContentLoaded', () => cargarPosts());
 </script>
 </body>
 </html>
