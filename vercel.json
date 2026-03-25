@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/cachorritos.html",
+      "permanent": false
+    }
+    ]
+}
