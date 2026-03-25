@@ -1,9 +1,8 @@
 {
-  "redirects": [
+  "rewrites": [
     {
       "source": "/",
-      "destination": "/cachorritos.html",
-      "permanent": false
+      "destination": "/cachorritos.html"
     }
-    ]
+  ]
 }
